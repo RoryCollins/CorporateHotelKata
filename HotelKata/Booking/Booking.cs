@@ -1,6 +1,7 @@
 using System;
+using HotelKata.Room;
 
-namespace HotelKata
+namespace HotelKata.Booking
 {
     public class Booking
     {

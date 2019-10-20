@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using HotelKata.Room;
 
-namespace HotelKata
+namespace HotelKata.Hotel
 {
     public class Hotel
     {
@@ -60,9 +61,7 @@ namespace HotelKata
         {
         }
 
-        public override void SetRoom(int number, RoomType roomType)
-        {
-        }
+        public override void SetRoom(int number, RoomType roomType) {}
 
         public override IEnumerable<int> GetRoomsBy(RoomType roomType)
         {

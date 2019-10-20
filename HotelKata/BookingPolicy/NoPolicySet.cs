@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using HotelKata.Room;
 
-namespace HotelKata
+namespace HotelKata.BookingPolicy
 {
     class NoPolicySet : Policy
     {

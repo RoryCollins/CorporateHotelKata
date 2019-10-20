@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
+using HotelKata.BookingPolicy;
+using HotelKata.Hotel;
+using HotelKata.Room;
 
-namespace HotelKata
+namespace HotelKata.Booking
 {
     public class BookingService
     {

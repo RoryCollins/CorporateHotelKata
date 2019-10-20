@@ -1,4 +1,6 @@
 using System;
+using HotelKata.Hotel;
+using HotelKata.Room;
 using Moq;
 using Xunit;
 
@@ -31,7 +33,7 @@ namespace HotelKata.test.Unit
         {
             var hotelId = Guid.NewGuid();
             var hotelName = "The Grand Budapest Hotel";
-            var hotel = new Hotel(hotelId, hotelName);
+            var hotel = new Hotel.Hotel(hotelId, hotelName);
             HotelRepository.Setup(it => it.FindHotelBy(hotelId)).Returns(hotel);
                 
             HotelService.SetRoom(hotelId, 101, RoomType.Standard);

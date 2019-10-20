@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
+using HotelKata.Booking;
+using HotelKata.BookingPolicy;
+using HotelKata.Hotel;
+using HotelKata.Room;
 using Xunit;
-using static HotelKata.RoomType;
+using static HotelKata.Room.RoomType;
 using static HotelKata.test.Unit.BookingBuilder;
 
 namespace HotelKata.test.Acceptance
@@ -33,8 +37,6 @@ namespace HotelKata.test.Acceptance
             var hotelId = Guid.NewGuid();
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 101, Standard);
-            hotelService.SetRoom(hotelId, 102, Standard);
-            hotelService.SetRoom(hotelId, 103, Standard);
 
             var expectedBooking = aBooking()
                                     .WithEmployeeId(employeeId)
@@ -52,7 +54,7 @@ namespace HotelKata.test.Acceptance
         {
             var hotelId = Guid.NewGuid();
             hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 1, Standard);
+            hotelService.SetRoom(hotelId, 101, Standard);
             
             bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut);
 

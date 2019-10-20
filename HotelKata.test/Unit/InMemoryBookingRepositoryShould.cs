@@ -1,6 +1,7 @@
 using System;
+using HotelKata.Booking;
 using Xunit;
-using static HotelKata.RoomType;
+using static HotelKata.Room.RoomType;
 
 namespace HotelKata.test.Unit
 {

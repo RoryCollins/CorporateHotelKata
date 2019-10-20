@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace HotelKata
+namespace HotelKata.Hotel
 {
     public class InMemoryHotelRepository : HotelRepository
     {

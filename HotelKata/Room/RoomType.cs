@@ -1,4 +1,4 @@
-namespace HotelKata
+namespace HotelKata.Room
 {
     public enum RoomType
     {

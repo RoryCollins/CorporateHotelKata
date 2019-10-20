@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using HotelKata.Room;
 
-namespace HotelKata
+namespace HotelKata.BookingPolicy
 {
     public class ProductionBookingPolicyService : BookingPolicyService
     {

@@ -1,5 +1,6 @@
 using System;
-using static HotelKata.RoomType;
+using HotelKata.Room;
+using static HotelKata.Room.RoomType;
 
 namespace HotelKata.test.Unit
 {
@@ -47,9 +48,9 @@ namespace HotelKata.test.Unit
             this.roomType = roomType;
             return this;
         }
-        public Booking Build()
+        public Booking.Booking Build()
         {
-            return new Booking(employeeId, hotelId, roomType, checkIn, checkOut);
+            return new Booking.Booking(employeeId, hotelId, roomType, checkIn, checkOut);
         }
     }
 }

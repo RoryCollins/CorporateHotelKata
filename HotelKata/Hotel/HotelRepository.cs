@@ -1,6 +1,6 @@
 using System;
 
-namespace HotelKata
+namespace HotelKata.Hotel
 {
     public interface HotelRepository
     {

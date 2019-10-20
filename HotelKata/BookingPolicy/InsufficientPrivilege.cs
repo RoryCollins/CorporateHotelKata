@@ -1,6 +1,6 @@
 using System;
 
-namespace HotelKata
+namespace HotelKata.BookingPolicy
 {
     public class InsufficientPrivilege : Exception
     {

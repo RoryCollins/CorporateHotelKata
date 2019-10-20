@@ -1,16 +1,16 @@
 using System;
 using Xunit;
-using static HotelKata.RoomType;
+using static HotelKata.Room.RoomType;
 
 namespace HotelKata.test.Unit
 {
     public class HotelShould
     {
-        private readonly Hotel hotel;
+        private readonly Hotel.Hotel hotel;
 
         public HotelShould()
         {
-            hotel = new Hotel(Guid.NewGuid(), "Hotel California");
+            hotel = new Hotel.Hotel(Guid.NewGuid(), "Hotel California");
             hotel.SetRoom(101, Standard);
         }
 

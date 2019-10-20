@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using HotelKata.BookingPolicy;
+using HotelKata.Room;
 using Xunit;
-using static HotelKata.RoomType;
+using static HotelKata.Room.RoomType;
 
 namespace HotelKata.test.Unit
 {

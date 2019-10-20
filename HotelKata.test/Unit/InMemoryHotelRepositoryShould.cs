@@ -1,4 +1,5 @@
 using System;
+using HotelKata.Hotel;
 using Xunit;
 
 namespace HotelKata.test.Unit
@@ -13,7 +14,7 @@ namespace HotelKata.test.Unit
             var hotelId = Guid.NewGuid();
             var hotelName = "Hotel Transylvania";
             HotelRepository.AddHotel(hotelId, hotelName);
-            var hotel = new Hotel(hotelId, hotelName);
+            var hotel = new Hotel.Hotel(hotelId, hotelName);
             Assert.Equal(hotel, HotelRepository.FindHotelBy(hotelId));
         }
 
