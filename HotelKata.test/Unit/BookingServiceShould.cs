@@ -67,9 +67,9 @@ namespace HotelKata.test.Unit
         [Fact]
         public void ThrowExceptionIfRoomIsAlreadyBooked()
         {
-            var booking = aBooking().WithEmployeeId(employeeId).WithHotelId(hotelId).Build();
+            var existingBooking = aBooking().WithEmployeeId(employeeId).WithHotelId(hotelId).Build();
             
-            bookingRepository.Setup(it => it.GetBookings(hotelId, Standard)).Returns(new List<Booking.Booking> {booking});
+            bookingRepository.Setup(it => it.GetActiveBookings(hotelId, Standard, checkIn)).Returns(new List<Booking.Booking> {existingBooking});
             Assert.Throws<RoomUnavailable>(() => bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut));
         }
 

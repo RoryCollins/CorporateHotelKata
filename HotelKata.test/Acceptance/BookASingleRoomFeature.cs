@@ -14,11 +14,12 @@ namespace HotelKata.test.Acceptance
     public class BookASingleRoomFeature
     {
         private readonly ProductionHotelService hotelService;
-        private BookingRepository bookingRepository;
-        private BookingPolicyService bookingPolicyService;
-        private readonly Guid employeeId;
-        private readonly DateTime checkIn = DateTime.Parse("12/10/2019");
-        private readonly DateTime checkOut = DateTime.Parse("19/10/2019");
+        private readonly BookingRepository bookingRepository  = new InMemoryBookingRepository();
+        private readonly BookingPolicyService bookingPolicyService;
+        private readonly Guid employeeId = Guid.NewGuid();
+        private static readonly DateTime Oct12th = DateTime.Parse("12/10/2019");
+        private static readonly DateTime Oct19th = DateTime.Parse("19/10/2019");
+        private static readonly DateTime Oct26th = DateTime.Parse("26/10/2019");
         private readonly BookingService bookingService;
         private readonly Mock<IdGenerator> idGenerator = new Mock<IdGenerator>();
 
@@ -28,8 +29,6 @@ namespace HotelKata.test.Acceptance
             bookingPolicyService = new ProductionBookingPolicyService(bookingPolicyRepository);
             HotelRepository hotelRepository = new InMemoryHotelRepository();
             hotelService = new ProductionHotelService(hotelRepository);
-            bookingRepository = new InMemoryBookingRepository();
-            employeeId = Guid.NewGuid();
             bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService, idGenerator.Object);
         }
 
@@ -46,10 +45,10 @@ namespace HotelKata.test.Acceptance
                                     .WithId(bookingId)
                                     .WithEmployeeId(employeeId)
                                     .WithHotelId(hotelId)
-                                    .From(checkIn)
-                                    .To(checkOut)
+                                    .From(Oct12th)
+                                    .To(Oct19th)
                                     .Build();
-            var actualBooking = bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut);
+            var actualBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
             
             Assert.Equal(expectedBooking, actualBooking);
         }
@@ -61,9 +60,9 @@ namespace HotelKata.test.Acceptance
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 101, Standard);
             
-            bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut);
+            bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
 
-            Assert.Throws<RoomUnavailable>(() =>bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut));
+            Assert.Throws<RoomUnavailable>(() =>bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th));
         }
 
         [Fact]
@@ -77,7 +76,7 @@ namespace HotelKata.test.Acceptance
             bookingPolicyService.SetEmployeePolicy(employeeId, new List<RoomType>() {Standard});
 
             Assert.Throws<InsufficientPrivilege>(() =>
-                bookingService.Book(employeeId, hotelId, Master, checkIn, checkOut));
+                bookingService.Book(employeeId, hotelId, Master, Oct12th, Oct19th));
         }
 
         [Fact]
@@ -88,7 +87,19 @@ namespace HotelKata.test.Acceptance
             hotelService.SetRoom(hotelId, 101, Standard);
             
             Assert.Throws<CheckoutDateInvalid>(() =>
-                bookingService.Book(employeeId, hotelId, Master, DateTime.Parse("01/04/2018"), DateTime.Parse("01/04/2018")));
+                bookingService.Book(employeeId, hotelId, Master, Oct12th, Oct12th));
+        }
+
+        [Fact]
+        public void TheOneWhereARoomIsBookedConsecutively()
+        {
+            var hotelId = Guid.NewGuid();
+            hotelService.AddHotel(hotelId, "The Overlook");
+            hotelService.SetRoom(hotelId, 101, Standard);
+            
+            bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
+            bookingService.Book(employeeId, hotelId, Standard, Oct19th, Oct26th);
+            
         }
     }
 }

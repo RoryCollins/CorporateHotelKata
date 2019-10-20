@@ -8,5 +8,6 @@ namespace HotelKata.Booking
     {
         void AddBooking(Booking booking);
         IEnumerable<Booking> GetBookings(Guid hotelId, RoomType roomType);
+        IEnumerable<Booking> GetActiveBookings(Guid hotelId, RoomType roomType, DateTime currentDate);
     }
 }

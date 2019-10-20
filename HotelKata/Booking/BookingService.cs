@@ -31,13 +31,17 @@ namespace HotelKata.Booking
             return booking;
         }
 
-        public void ValidateBooking(Booking booking)
+        private void ValidateBooking(Booking booking)
         {
             if(booking.CheckOut <= booking.CheckIn) throw new CheckoutDateInvalid();
             var hotel = hotelService.FindHotelBy(booking.HotelId);
             var rooms = hotel.GetRoomsBy(booking.RoomType).ToList();
             if (!rooms.Any()) throw new RoomUnavailable();
-            if(rooms.Count() <= bookingRepository.GetBookings(booking.HotelId, booking.RoomType).Count()) throw new RoomUnavailable();
+            
+            
+            
+            if(rooms.Count() <= bookingRepository.GetActiveBookings(booking.HotelId, booking.RoomType, booking.CheckIn).Count()) throw new RoomUnavailable();
+            
             if(!bookingPolicyService.isBookingAllowed(booking.EmployeeId, booking.RoomType)) throw new InsufficientPrivilege();
         }
         
