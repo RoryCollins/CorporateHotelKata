@@ -9,12 +9,20 @@ namespace HotelKata.test.Acceptance
     {
         private readonly ProductionHotelService hotelService;
         private BookingRepository bookingRepository;
+        private BookingPolicyService bookingPolicyService;
+        private readonly Guid employeeId;
+        private readonly string checkIn = "12/10/2019";
+        private readonly string checkOut = "19/10/2019";
+        private readonly BookingService bookingService;
 
         public BookASingleRoomFeature()
         {
+            bookingPolicyService = new ProductionBookingPolicyService();
             HotelRepository hotelRepository = new InMemoryHotelRepository();
             hotelService = new ProductionHotelService(hotelRepository);
             bookingRepository = new InMemoryBookingRepository();
+            employeeId = Guid.NewGuid();
+            bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService);
         }
 
         [Fact]
@@ -25,12 +33,7 @@ namespace HotelKata.test.Acceptance
             hotelService.SetRoom(hotelId, 101, Standard);
             hotelService.SetRoom(hotelId, 102, Standard);
             hotelService.SetRoom(hotelId, 103, Standard);
-            
-            var bookingService = new BookingService(hotelService, bookingRepository);
 
-            var employeeId = Guid.NewGuid();
-            var checkIn = "12/10/2019";
-            var checkOut = "19/10/2019";
             var expectedBooking = aBooking()
                                     .WithEmployeeId(employeeId)
                                     .WithHotelId(hotelId)
@@ -49,13 +52,21 @@ namespace HotelKata.test.Acceptance
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 1, Standard);
             
-            var bookingService = new BookingService(hotelService, bookingRepository);
-            var employeeId = Guid.NewGuid();
-            var checkIn = "12/10/2019";
-            var checkOut = "19/10/2019";
             bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut);
 
             Assert.Throws<RoomUnavailable>(() =>bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut));
+        }
+
+        [Fact]
+        public void TheOneWhereTheEmployeeDoesNotHAveSufficientPrivilege()
+        {
+            var hotelId = Guid.NewGuid();
+            hotelService.AddHotel(hotelId, "The Overlook");
+            hotelService.SetRoom(hotelId, 101, Standard);
+            hotelService.SetRoom(hotelId, 501, Master);
+
+            Assert.Throws<InsufficientPrivilege>(() =>
+                bookingService.Book(employeeId, hotelId, Master, checkIn, checkOut));
         }
     }
 }
