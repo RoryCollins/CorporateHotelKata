@@ -7,7 +7,7 @@ namespace HotelKata.Booking
     {
         protected bool Equals(Booking other)
         {
-            return bookingId.Equals(other.bookingId);
+            return bookingId.Equals(other.bookingId) && EmployeeId.Equals(other.EmployeeId) && HotelId.Equals(other.HotelId) && RoomType == other.RoomType && CheckIn.Equals(other.CheckIn) && CheckOut.Equals(other.CheckOut);
         }
 
         public override bool Equals(object obj)
@@ -20,24 +20,33 @@ namespace HotelKata.Booking
 
         public override int GetHashCode()
         {
-            return bookingId.GetHashCode();
+            unchecked
+            {
+                var hashCode = bookingId.GetHashCode();
+                hashCode = (hashCode * 397) ^ EmployeeId.GetHashCode();
+                hashCode = (hashCode * 397) ^ HotelId.GetHashCode();
+                hashCode = (hashCode * 397) ^ (int) RoomType;
+                hashCode = (hashCode * 397) ^ CheckIn.GetHashCode();
+                hashCode = (hashCode * 397) ^ CheckOut.GetHashCode();
+                return hashCode;
+            }
         }
 
         private readonly Guid bookingId;
-        private readonly Guid employeeId;
-        private readonly Guid hotelId;
-        private readonly RoomType roomType;
-        private readonly string checkIn;
-        private readonly string checkOut;
+        public Guid EmployeeId { get; }
+        public Guid HotelId { get; }
+        public RoomType RoomType { get; }
+        public DateTime CheckIn { get; }
+        public DateTime CheckOut { get; }
 
-        public Booking(Guid employeeId, Guid hotelId, RoomType roomType, string checkIn, string checkOut)
+        public Booking(Guid employeeId, Guid hotelId, RoomType roomType, DateTime checkIn, DateTime checkOut, Guid bookingId)
         {
-            bookingId = new Guid();
-            this.employeeId = employeeId;
-            this.hotelId = hotelId;
-            this.roomType = roomType;
-            this.checkIn = checkIn;
-            this.checkOut = checkOut;
+            this.EmployeeId = employeeId;
+            this.HotelId = hotelId;
+            this.RoomType = roomType;
+            this.CheckIn = checkIn;
+            this.CheckOut = checkOut;
+            this.bookingId = bookingId;
         }
     }
 }

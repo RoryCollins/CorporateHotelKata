@@ -4,6 +4,7 @@ using HotelKata.Booking;
 using HotelKata.BookingPolicy;
 using HotelKata.Hotel;
 using HotelKata.Room;
+using Moq;
 using Xunit;
 using static HotelKata.Room.RoomType;
 using static HotelKata.test.Unit.BookingBuilder;
@@ -16,9 +17,10 @@ namespace HotelKata.test.Acceptance
         private BookingRepository bookingRepository;
         private BookingPolicyService bookingPolicyService;
         private readonly Guid employeeId;
-        private readonly string checkIn = "12/10/2019";
-        private readonly string checkOut = "19/10/2019";
+        private readonly DateTime checkIn = DateTime.Parse("12/10/2019");
+        private readonly DateTime checkOut = DateTime.Parse("19/10/2019");
         private readonly BookingService bookingService;
+        private readonly Mock<IdGenerator> idGenerator = new Mock<IdGenerator>();
 
         public BookASingleRoomFeature()
         {
@@ -28,7 +30,7 @@ namespace HotelKata.test.Acceptance
             hotelService = new ProductionHotelService(hotelRepository);
             bookingRepository = new InMemoryBookingRepository();
             employeeId = Guid.NewGuid();
-            bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService);
+            bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService, idGenerator.Object);
         }
 
         [Fact]
@@ -37,8 +39,11 @@ namespace HotelKata.test.Acceptance
             var hotelId = Guid.NewGuid();
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 101, Standard);
+            var bookingId = Guid.NewGuid();
+            idGenerator.Setup(it => it.GenerateId()).Returns(bookingId);
 
             var expectedBooking = aBooking()
+                                    .WithId(bookingId)
                                     .WithEmployeeId(employeeId)
                                     .WithHotelId(hotelId)
                                     .From(checkIn)
@@ -69,10 +74,21 @@ namespace HotelKata.test.Acceptance
             hotelService.SetRoom(hotelId, 101, Standard);
             hotelService.SetRoom(hotelId, 501, Master);
             
-            bookingPolicyService.SetEmployeePolicy(employeeId, new List<RoomType>(){Standard});
+            bookingPolicyService.SetEmployeePolicy(employeeId, new List<RoomType>() {Standard});
 
             Assert.Throws<InsufficientPrivilege>(() =>
                 bookingService.Book(employeeId, hotelId, Master, checkIn, checkOut));
+        }
+
+        [Fact]
+        public void TheOneWhereIMustCheckOutAtLeastOneDayAfterCheckingIn()
+        {
+            var hotelId = Guid.NewGuid();
+            hotelService.AddHotel(hotelId, "The Overlook");
+            hotelService.SetRoom(hotelId, 101, Standard);
+            
+            Assert.Throws<CheckoutDateInvalid>(() =>
+                bookingService.Book(employeeId, hotelId, Master, DateTime.Parse("01/04/2018"), DateTime.Parse("01/04/2018")));
         }
     }
 }

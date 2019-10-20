@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using HotelKata.Room;
 using static HotelKata.Room.RoomType;
 
@@ -8,15 +9,21 @@ namespace HotelKata.test.Unit
     {
         private Guid employeeId = Guid.NewGuid();
         private Guid hotelId = Guid.NewGuid();
-        private string checkIn = "01/04/2018";
-        private string checkOut = "03/01/2018";
+        private DateTime checkIn = DateTime.Parse("01/04/2018");
+        private DateTime checkOut = DateTime.Parse("03/01/2018");
         private RoomType roomType = Standard;
+        private Guid bookingId = Guid.NewGuid();
 
         public static BookingBuilder aBooking()
         {
             return new BookingBuilder();
         }
 
+        public BookingBuilder WithId(Guid bookingId)
+        {
+            this.bookingId = bookingId;
+            return this;
+        }
 
         public BookingBuilder WithEmployeeId(Guid employeeId)
         {
@@ -31,13 +38,13 @@ namespace HotelKata.test.Unit
         }
 
 
-        public BookingBuilder From(string checkIn)
+        public BookingBuilder From(DateTime checkIn)
         {
             this.checkIn = checkIn;
             return this;
         }
 
-        public BookingBuilder To(string checkOut)
+        public BookingBuilder To(DateTime checkOut)
         {
             this.checkOut = checkOut;
             return this;
@@ -50,7 +57,7 @@ namespace HotelKata.test.Unit
         }
         public Booking.Booking Build()
         {
-            return new Booking.Booking(employeeId, hotelId, roomType, checkIn, checkOut);
+            return new Booking.Booking(employeeId, hotelId, roomType, checkIn, checkOut, bookingId);
         }
     }
 }
