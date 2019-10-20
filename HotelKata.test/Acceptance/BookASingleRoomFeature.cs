@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Xunit;
 using static HotelKata.RoomType;
 using static HotelKata.test.Unit.BookingBuilder;
@@ -17,7 +18,8 @@ namespace HotelKata.test.Acceptance
 
         public BookASingleRoomFeature()
         {
-            bookingPolicyService = new ProductionBookingPolicyService();
+            var bookingPolicyRepository = new InMemoryBookingPolicyRepository();
+            bookingPolicyService = new ProductionBookingPolicyService(bookingPolicyRepository);
             HotelRepository hotelRepository = new InMemoryHotelRepository();
             hotelService = new ProductionHotelService(hotelRepository);
             bookingRepository = new InMemoryBookingRepository();
@@ -58,12 +60,14 @@ namespace HotelKata.test.Acceptance
         }
 
         [Fact]
-        public void TheOneWhereTheEmployeeDoesNotHAveSufficientPrivilege()
+        public void TheOneWhereTheEmployeeDoesNotHaveSufficientPrivilege()
         {
             var hotelId = Guid.NewGuid();
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 101, Standard);
             hotelService.SetRoom(hotelId, 501, Master);
+            
+            bookingPolicyService.SetEmployeePolicy(employeeId, new List<RoomType>(){Standard});
 
             Assert.Throws<InsufficientPrivilege>(() =>
                 bookingService.Book(employeeId, hotelId, Master, checkIn, checkOut));

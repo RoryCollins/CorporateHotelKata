@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HotelKata
 {
-    public class InMemoryBookingRepository : BookingRepository
+    public partial class InMemoryBookingRepository : BookingRepository
     {
         private readonly List<Booking> bookings = new List<Booking>();
         public void AddBooking(Booking booking)

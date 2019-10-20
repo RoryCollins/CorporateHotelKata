@@ -3,7 +3,7 @@ using Xunit;
 
 namespace HotelKata.test.Unit
 {
-    public class ProductionHotelRepositoryShould
+    public class InMemoryHotelRepositoryShould
     {
         private static readonly InMemoryHotelRepository HotelRepository = new InMemoryHotelRepository();
 
