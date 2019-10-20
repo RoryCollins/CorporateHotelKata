@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Moq;
 using Xunit;
 using static HotelKata.RoomType;
+using static HotelKata.test.Unit.BookingBuilder;
 
 namespace HotelKata.test.Unit
 {
@@ -49,16 +51,18 @@ namespace HotelKata.test.Unit
         public void StoreABooking()
         {
             bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut);
-            var booking = new Booking(employeeId, hotelId, Standard, checkIn, checkOut);
+            var booking = aBooking().WithEmployeeId(employeeId).WithHotelId(hotelId).Build();
             bookingRepository.Verify(it=>it.AddBooking(booking));
         }
 
         [Fact]
         public void ThrowExceptionIfRoomIsAlreadyBooked()
         {
-            var booking = new Booking(employeeId, hotelId, Standard, checkIn, checkOut);
+            var booking = aBooking().WithEmployeeId(employeeId).WithHotelId(hotelId).Build();
+            
             bookingRepository.Setup(it => it.GetBookings(hotelId, Standard)).Returns(new List<Booking> {booking});
             Assert.Throws<RoomUnavailable>(() => bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut));
         }
     }
 }
+

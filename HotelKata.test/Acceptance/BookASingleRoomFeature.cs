@@ -1,6 +1,7 @@
 using System;
 using Xunit;
 using static HotelKata.RoomType;
+using static HotelKata.test.Unit.BookingBuilder;
 
 namespace HotelKata.test.Acceptance
 {
@@ -30,7 +31,12 @@ namespace HotelKata.test.Acceptance
             var employeeId = Guid.NewGuid();
             var checkIn = "12/10/2019";
             var checkOut = "19/10/2019";
-            var expectedBooking = new Booking(employeeId, hotelId, Standard, checkIn, checkOut);
+            var expectedBooking = aBooking()
+                                    .WithEmployeeId(employeeId)
+                                    .WithHotelId(hotelId)
+                                    .From(checkIn)
+                                    .To(checkOut)
+                                    .Build();
             var actualBooking = bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut);
             
             Assert.Equal(expectedBooking, actualBooking);
@@ -51,6 +57,5 @@ namespace HotelKata.test.Acceptance
 
             Assert.Throws<RoomUnavailable>(() =>bookingService.Book(employeeId, hotelId, Standard, checkIn, checkOut));
         }
-
     }
 }

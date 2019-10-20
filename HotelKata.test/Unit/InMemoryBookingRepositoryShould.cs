@@ -1,5 +1,6 @@
 using System;
 using Xunit;
+using static HotelKata.RoomType;
 
 namespace HotelKata.test.Unit
 {
@@ -9,15 +10,12 @@ namespace HotelKata.test.Unit
         public void AddAndRetrieveBooking()
         {
             var bookingRepository = new InMemoryBookingRepository();
-
             var hotelId = Guid.NewGuid();
-            var booking = new Booking(Guid.NewGuid(), hotelId, RoomType.Standard, "12/10/2019", "19/10/2019");
+            var booking = BookingBuilder.aBooking().WithHotelId(hotelId).WithRoomType(Standard).Build();
             
             bookingRepository.AddBooking(booking);
-            Assert.Contains(booking, bookingRepository.GetBookings(hotelId, RoomType.Standard));
+            Assert.Contains(booking, bookingRepository.GetBookings(hotelId, Standard));
         }
         
-//        [Fact]
-//        public void 
     }
 }
