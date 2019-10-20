@@ -5,7 +5,7 @@ namespace HotelKata.test.Unit
 {
     public class ProductionHotelRepositoryShould
     {
-        private static readonly ProductionHotelRepository HotelRepository = new ProductionHotelRepository();
+        private static readonly InMemoryHotelRepository HotelRepository = new InMemoryHotelRepository();
 
         [Fact]
         public void StoreAndRetrieveHotels()

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace HotelKata
 {
-    public class ProductionHotelRepository : HotelRepository
+    public class InMemoryHotelRepository : HotelRepository
     {
         private List<Hotel> hotels;
 
-        public ProductionHotelRepository()
+        public InMemoryHotelRepository()
         {
             hotels = new List<Hotel>();
         }

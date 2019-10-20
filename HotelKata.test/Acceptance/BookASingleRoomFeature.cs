@@ -7,11 +7,13 @@ namespace HotelKata.test.Acceptance
     public class BookASingleRoomFeature
     {
         private readonly ProductionHotelService hotelService;
+        private BookingRepository bookingRepository;
 
         public BookASingleRoomFeature()
         {
-            HotelRepository hotelRepository = new ProductionHotelRepository();
+            HotelRepository hotelRepository = new InMemoryHotelRepository();
             hotelService = new ProductionHotelService(hotelRepository);
+            bookingRepository = new InMemoryBookingRepository();
         }
 
         [Fact]
@@ -23,7 +25,7 @@ namespace HotelKata.test.Acceptance
             hotelService.SetRoom(hotelId, 102, Standard);
             hotelService.SetRoom(hotelId, 103, Standard);
             
-            var bookingService = new BookingService(hotelService);
+            var bookingService = new BookingService(hotelService, bookingRepository);
 
             var employeeId = Guid.NewGuid();
             var checkIn = "12/10/2019";
@@ -41,7 +43,7 @@ namespace HotelKata.test.Acceptance
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 1, Standard);
             
-            var bookingService = new BookingService(hotelService);
+            var bookingService = new BookingService(hotelService, bookingRepository);
             var employeeId = Guid.NewGuid();
             var checkIn = "12/10/2019";
             var checkOut = "19/10/2019";
