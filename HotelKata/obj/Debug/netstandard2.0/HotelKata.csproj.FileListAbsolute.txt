@@ -1,0 +1,9 @@
+/home/rory/Source/HotelKata/HotelKata/bin/Debug/netstandard2.0/HotelKata.deps.json
+/home/rory/Source/HotelKata/HotelKata/bin/Debug/netstandard2.0/HotelKata.dll
+/home/rory/Source/HotelKata/HotelKata/bin/Debug/netstandard2.0/HotelKata.pdb
+/home/rory/Source/HotelKata/HotelKata/obj/Debug/netstandard2.0/HotelKata.csprojAssemblyReference.cache
+/home/rory/Source/HotelKata/HotelKata/obj/Debug/netstandard2.0/HotelKata.csproj.CoreCompileInputs.cache
+/home/rory/Source/HotelKata/HotelKata/obj/Debug/netstandard2.0/HotelKata.AssemblyInfoInputs.cache
+/home/rory/Source/HotelKata/HotelKata/obj/Debug/netstandard2.0/HotelKata.AssemblyInfo.cs
+/home/rory/Source/HotelKata/HotelKata/obj/Debug/netstandard2.0/HotelKata.dll
+/home/rory/Source/HotelKata/HotelKata/obj/Debug/netstandard2.0/HotelKata.pdb
