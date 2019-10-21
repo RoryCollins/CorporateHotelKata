@@ -8,9 +8,9 @@ namespace HotelKata.BookingPolicy
     public class InMemoryBookingPolicyRepository : BookingPolicyRepository
     {
         private readonly List<Policy> policies = new List<Policy>();
-        public void AddPolicy(Guid Id, IEnumerable<RoomType> roomTypes)
+        public void AddPolicy(Guid id, IEnumerable<RoomType> roomTypes)
         {
-            policies.Add(new Policy(Id, roomTypes));
+            policies.Add(new Policy(id, roomTypes));
         }
 
         public Policy PolicyFor(Guid employeeId, Guid companyId)

@@ -8,11 +8,11 @@ namespace HotelKata.BookingPolicy
     public class Policy
     {
         public Guid Id { get; }
-        private IEnumerable<RoomType> roomTypes;
+        private readonly IEnumerable<RoomType> roomTypes;
 
-        public Policy(Guid Id, IEnumerable<RoomType> roomTypes)
+        public Policy(Guid id, IEnumerable<RoomType> roomTypes)
         {
-            this.Id = Id;
+            this.Id = id;
             this.roomTypes = roomTypes;
         }
 
