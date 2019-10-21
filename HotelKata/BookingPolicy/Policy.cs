@@ -7,12 +7,12 @@ namespace HotelKata.BookingPolicy
 {
     public class Policy
     {
-        public Guid EmployeeId { get; }
+        public Guid Id { get; }
         private IEnumerable<RoomType> roomTypes;
 
-        public Policy(Guid employeeId, IEnumerable<RoomType> roomTypes)
+        public Policy(Guid Id, IEnumerable<RoomType> roomTypes)
         {
-            EmployeeId = employeeId;
+            this.Id = Id;
             this.roomTypes = roomTypes;
         }
 

@@ -8,15 +8,16 @@ namespace HotelKata.BookingPolicy
     public class InMemoryBookingPolicyRepository : BookingPolicyRepository
     {
         private readonly List<Policy> policies = new List<Policy>();
-        public void AddPolicy(Guid employeeId, IEnumerable<RoomType> roomTypes)
-        
+        public void AddPolicy(Guid Id, IEnumerable<RoomType> roomTypes)
         {
-            policies.Add(new Policy(employeeId, roomTypes));
+            policies.Add(new Policy(Id, roomTypes));
         }
 
-        public Policy PolicyFor(Guid employeeId)
+        public Policy PolicyFor(Guid employeeId, Guid companyId)
         {
-            return policies.FirstOrDefault(it => it.EmployeeId == employeeId) ?? new NoPolicySet();
+            return policies.FirstOrDefault(it => it.Id == employeeId) ?? 
+                   policies.FirstOrDefault(it => it.Id == companyId) ??
+                   new NoPolicySet();
         }
     }
 }
