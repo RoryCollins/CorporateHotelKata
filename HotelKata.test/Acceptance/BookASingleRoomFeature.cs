@@ -7,6 +7,7 @@ using HotelKata.Room;
 using Moq;
 using Xunit;
 using static HotelKata.Room.RoomType;
+using static HotelKata.test.Acceptance.HotelBuilder;
 using static HotelKata.test.Unit.BookingBuilder;
 
 namespace HotelKata.test.Acceptance
@@ -24,6 +25,7 @@ namespace HotelKata.test.Acceptance
         private readonly Mock<IdGenerator> mockIdGenerator = new Mock<IdGenerator>();
         private readonly IdGenerator productionIdGenerator = new ProductionIdGenerator();
         private readonly BookingService bookingServiceWithStubbedIdGenerator;
+        private readonly Guid hotelId = Guid.NewGuid();
 
         public BookASingleRoomFeature()
         {
@@ -38,9 +40,11 @@ namespace HotelKata.test.Acceptance
         [Fact]
         public void TheOneWhereISuccessfullyBookASingleRoom()
         {
-            var hotelId = Guid.NewGuid();
-            hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 101, Standard);
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .To(hotelService);
+            
             var bookingId = Guid.NewGuid();
             mockIdGenerator.Setup(it => it.GenerateId()).Returns(bookingId);
 
@@ -59,9 +63,10 @@ namespace HotelKata.test.Acceptance
         [Fact]
         public void TheOneWhereThereAreNoRoomsAvailable()
         {
-            var hotelId = Guid.NewGuid();
-            hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 101, Standard);
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .To(hotelService);
             
             bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
 
@@ -71,10 +76,11 @@ namespace HotelKata.test.Acceptance
         [Fact]
         public void TheOneWhereTheEmployeeDoesNotHaveSufficientPrivilege()
         {
-            var hotelId = Guid.NewGuid();
-            hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 101, Standard);
-            hotelService.SetRoom(hotelId, 501, Master);
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .WithAMasterRoomAt(501)
+                .To(hotelService);
             
             bookingPolicyService.SetEmployeePolicy(employeeId, new List<RoomType>() {Standard});
 
@@ -85,9 +91,10 @@ namespace HotelKata.test.Acceptance
         [Fact]
         public void TheOneWhereIMustCheckOutAtLeastOneDayAfterCheckingIn()
         {
-            var hotelId = Guid.NewGuid();
-            hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 101, Standard);
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .To(hotelService);
             
             Assert.Throws<CheckoutDateInvalid>(() =>
                 bookingService.Book(employeeId, hotelId, Master, Oct12th, Oct12th));
@@ -96,9 +103,10 @@ namespace HotelKata.test.Acceptance
         [Fact]
         public void TheOneWhereARoomIsBookedConsecutively()
         {
-            var hotelId = Guid.NewGuid();
-            hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 101, Standard);
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .To(hotelService);
             
             bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
             bookingService.Book(employeeId, hotelId, Standard, Oct19th, Oct26th);
@@ -107,10 +115,11 @@ namespace HotelKata.test.Acceptance
         [Fact]
         public void TheOneWhereIdenticalBookingsAreNotTreatedAsASingleBooking()
         {
-            var hotelId = Guid.NewGuid();
-            hotelService.AddHotel(hotelId, "The Overlook");
-            hotelService.SetRoom(hotelId, 101, Standard);
-            hotelService.SetRoom(hotelId, 102, Standard);
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .WithAStandardRoomAt(102)
+                .To(hotelService);
             
             var firstBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
             var secondBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
