@@ -18,13 +18,9 @@ namespace HotelKata.BookingPolicy
 
         public bool isBookingAllowed(Guid employeeId, RoomType roomType)
         {
-            var policy = bookingPolicyRepository.PolicyFor(employeeId);
-            if (policy.GetType() == typeof(NoPolicySet))
-            {
-                var companyId = companyService.FindCompanyByEmployee(employeeId);
-                policy = bookingPolicyRepository.PolicyFor(companyId);
-            }
-            return policy.IsValid(roomType);
+            var employeePolicy = bookingPolicyRepository.PolicyFor(employeeId);
+            var companyPolicy = bookingPolicyRepository.PolicyFor(companyService.FindCompanyByEmployee(employeeId));
+            return employeePolicy.Or(companyPolicy).IsValid(roomType);
         }
 
         public void SetCompanyPolicy(Guid companyId, IEnumerable<RoomType> roomTypes)
@@ -36,5 +32,15 @@ namespace HotelKata.BookingPolicy
         {
             bookingPolicyRepository.AddPolicy(employeeId, roomTypes);
         }
+
+
     }
+
+    static class Extension{
+        public static Policy Or(this Policy policy, Policy other)
+        {
+            return policy.GetType()==typeof(NoPolicySet) ? other : policy;
+        }
+    }
+    
 }
