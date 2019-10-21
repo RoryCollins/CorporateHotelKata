@@ -10,6 +10,7 @@ using Xunit;
 using static HotelKata.Room.RoomType;
 using static HotelKata.test.Acceptance.HotelBuilder;
 using static HotelKata.test.Unit.BookingBuilder;
+// ReSharper disable InconsistentNaming
 
 namespace HotelKata.test.Acceptance
 {
@@ -27,12 +28,14 @@ namespace HotelKata.test.Acceptance
         private readonly IdGenerator productionIdGenerator = new ProductionIdGenerator();
         private readonly EmployeeRepository inMemoryEmployeeRepository = new InMemoryEmployeeRepository();
         private readonly BookingService bookingServiceWithStubbedIdGenerator;
+        private readonly ProductionCompanyService companyService;
         private readonly Guid hotelId = Guid.NewGuid();
 
         public BookASingleRoomFeature()
         {
+            companyService = new ProductionCompanyService(inMemoryEmployeeRepository);
             var bookingPolicyRepository = new InMemoryBookingPolicyRepository();
-            bookingPolicyService = new ProductionBookingPolicyService(bookingPolicyRepository);
+            bookingPolicyService = new ProductionBookingPolicyService(bookingPolicyRepository, companyService);
             HotelRepository hotelRepository = new InMemoryHotelRepository();
             hotelService = new ProductionHotelService(hotelRepository);
             bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService, productionIdGenerator);
@@ -139,7 +142,6 @@ namespace HotelKata.test.Acceptance
                 .To(hotelService);
 
             var companyId = Guid.NewGuid();
-            var companyService = new CompanyService(inMemoryEmployeeRepository);
             companyService.AddEmployee(companyId, employeeId);
             bookingPolicyService.SetCompanyPolicy(companyId, new List<RoomType> {Standard});
             

@@ -2,18 +2,9 @@ using System;
 
 namespace HotelKata.Company
 {
-    public class CompanyService
+    public interface CompanyService
     {
-        private readonly EmployeeRepository employeeRepository;
-
-        public CompanyService(EmployeeRepository employeeRepository)
-        {
-            this.employeeRepository = employeeRepository;
-        }
-
-        public void AddEmployee(Guid companyId, Guid employeeId)
-        {
-            employeeRepository.Add(companyId, employeeId);
-        }
+        void AddEmployee(Guid companyId, Guid employeeId);
+        Guid FindCompanyByEmployee(Guid employeeId);
     }
 }
