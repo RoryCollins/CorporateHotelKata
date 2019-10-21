@@ -21,7 +21,9 @@ namespace HotelKata.test.Acceptance
         private static readonly DateTime Oct19th = DateTime.Parse("19/10/2019");
         private static readonly DateTime Oct26th = DateTime.Parse("26/10/2019");
         private readonly BookingService bookingService;
-        private readonly Mock<IdGenerator> idGenerator = new Mock<IdGenerator>();
+        private readonly Mock<IdGenerator> mockIdGenerator = new Mock<IdGenerator>();
+        private readonly IdGenerator productionIdGenerator = new ProductionIdGenerator();
+        private readonly BookingService bookingServiceWithStubbedIdGenerator;
 
         public BookASingleRoomFeature()
         {
@@ -29,7 +31,8 @@ namespace HotelKata.test.Acceptance
             bookingPolicyService = new ProductionBookingPolicyService(bookingPolicyRepository);
             HotelRepository hotelRepository = new InMemoryHotelRepository();
             hotelService = new ProductionHotelService(hotelRepository);
-            bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService, idGenerator.Object);
+            bookingService = new BookingService(hotelService, bookingRepository, bookingPolicyService, productionIdGenerator);
+            bookingServiceWithStubbedIdGenerator = new BookingService(hotelService, bookingRepository, bookingPolicyService, mockIdGenerator.Object);
         }
 
         [Fact]
@@ -39,7 +42,7 @@ namespace HotelKata.test.Acceptance
             hotelService.AddHotel(hotelId, "The Overlook");
             hotelService.SetRoom(hotelId, 101, Standard);
             var bookingId = Guid.NewGuid();
-            idGenerator.Setup(it => it.GenerateId()).Returns(bookingId);
+            mockIdGenerator.Setup(it => it.GenerateId()).Returns(bookingId);
 
             var expectedBooking = aBooking()
                                     .WithId(bookingId)
@@ -48,7 +51,7 @@ namespace HotelKata.test.Acceptance
                                     .From(Oct12th)
                                     .To(Oct19th)
                                     .Build();
-            var actualBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
+            var actualBooking = bookingServiceWithStubbedIdGenerator.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
             
             Assert.Equal(expectedBooking, actualBooking);
         }
@@ -99,7 +102,20 @@ namespace HotelKata.test.Acceptance
             
             bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
             bookingService.Book(employeeId, hotelId, Standard, Oct19th, Oct26th);
+        }
+
+        [Fact]
+        public void TheOneWhereIdenticalBookingsAreNotTreatedAsASingleBooking()
+        {
+            var hotelId = Guid.NewGuid();
+            hotelService.AddHotel(hotelId, "The Overlook");
+            hotelService.SetRoom(hotelId, 101, Standard);
+            hotelService.SetRoom(hotelId, 102, Standard);
             
+            var firstBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
+            var secondBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
+            
+            Assert.NotEqual(firstBooking, secondBooking);
         }
     }
 }
