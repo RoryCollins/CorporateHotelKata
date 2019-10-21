@@ -6,8 +6,9 @@ namespace HotelKata.BookingPolicy
 {
     public interface BookingPolicyService
     {
-        bool isBookingAllowed(Guid employeeId, RoomType master);
 
+        void SetCompanyPolicy(Guid companyId, IEnumerable<RoomType> roomTypes);
         void SetEmployeePolicy(Guid employeeId, IEnumerable<RoomType> roomTypes);
+        bool isBookingAllowed(Guid employeeId, RoomType master);
     }
 }

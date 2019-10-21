@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HotelKata.Booking;
 using HotelKata.BookingPolicy;
+using HotelKata.Company;
 using HotelKata.Hotel;
 using HotelKata.Room;
 using Moq;
@@ -24,6 +25,7 @@ namespace HotelKata.test.Acceptance
         private readonly BookingService bookingService;
         private readonly Mock<IdGenerator> mockIdGenerator = new Mock<IdGenerator>();
         private readonly IdGenerator productionIdGenerator = new ProductionIdGenerator();
+        private readonly EmployeeRepository inMemoryEmployeeRepository = new InMemoryEmployeeRepository();
         private readonly BookingService bookingServiceWithStubbedIdGenerator;
         private readonly Guid hotelId = Guid.NewGuid();
 
@@ -125,6 +127,24 @@ namespace HotelKata.test.Acceptance
             var secondBooking = bookingService.Book(employeeId, hotelId, Standard, Oct12th, Oct19th);
             
             Assert.NotEqual(firstBooking, secondBooking);
+        }
+
+        [Fact]
+        public void TheOneWhereMyBookingIsRejectedByTheCompanyPolicy()
+        {
+            RegisterAHotel()
+                .WithId(hotelId)
+                .WithAStandardRoomAt(101)
+                .WithAMasterRoomAt(501)
+                .To(hotelService);
+
+            var companyId = Guid.NewGuid();
+            var companyService = new CompanyService(inMemoryEmployeeRepository);
+            companyService.AddEmployee(companyId, employeeId);
+            bookingPolicyService.SetCompanyPolicy(companyId, new List<RoomType> {Standard});
+            
+            Assert.Throws<InsufficientPrivilege>(() =>
+                bookingService.Book(employeeId, hotelId, Master, Oct12th, Oct19th));
         }
     }
 }

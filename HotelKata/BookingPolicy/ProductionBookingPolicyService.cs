@@ -19,6 +19,11 @@ namespace HotelKata.BookingPolicy
 
         }
 
+        public void SetCompanyPolicy(Guid companyId, IEnumerable<RoomType> roomTypes)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SetEmployeePolicy(Guid employeeId, IEnumerable<RoomType> roomTypes)
         {
             bookingPolicyRepository.AddPolicy(employeeId, roomTypes);
